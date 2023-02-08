@@ -48,7 +48,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 	public List<JMenuItem> listMenuItems;
 	public String jm="off YitaiqiFilter";
 	public JMenuItem jmOff;
-	public String REGEX=".{30}[\"\'](/[a-zA-Z0-9/=_]+(\\.jspx|\\.jsp|\\.html|\\.php|\\.do|\\.aspx|\\.action|\\.json)*)[\"\'].{160}";
+	public String REGEX=".{10}[\"\'`](/[a-zA-Z0-9/=_{}?&]+(\\.jspx|\\.jsp|\\.html|\\.php|\\.do|\\.aspx|\\.action|\\.json)*)[\"\'`].{160}";
 	public HashMap<String, List> domain=new HashMap< String, List>();
 	public List APIListtxt=new ArrayList<String>();
 	//public String CachePath=System.getProperty("user.dir")+"/YitaiqiJSFilter/dataCace/";
@@ -129,14 +129,20 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 					@Override
 					public void valueChanged(ListSelectionEvent arg0) {
 						// TODO Auto-generated method stub
-						String c= domainlist.getSelectedValue();
-						String tableText=jtabbedpane.getTitleAt(jtabbedpane.getSelectedIndex());
-						if (tableText=="API接口") {
-						APIlist.setListData((String[])domain.get(c).toArray(new String[0]));
-						}else if(tableText=="敏感信息") {
-						Info_Text.setText(null);
-						infolist.setListData((String[])InfoTexMap.get(c).toArray(new String[0]));
+						try {
+							String c= domainlist.getSelectedValue();
+							String tableText=jtabbedpane.getTitleAt(jtabbedpane.getSelectedIndex());
+							if (tableText=="API接口") {
+							APIlist.setListData((String[])domain.get(c).toArray(new String[0]));
+							}else if(tableText=="敏感信息") {
+							Info_Text.setText(null);
+							infolist.setListData((String[])InfoTexMap.get(c).toArray(new String[0]));
+						
 
+						}
+						}catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				});
@@ -365,28 +371,24 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 			return;
 		}
 		String Hander=new String(messageInfo.getResponse());
-		String[] handerlist=Hander.split("\n",16);
-		for(String handers : handerlist) {
-			if (handers.toLowerCase().startsWith("content-type:")) {
-				Typehander=handers;
-				break;
-			}
-		}
-		if(( Typehander.indexOf("avascrip")!=-1&&CheckResponseType(hp.bytesToString(messageInfo.getRequest())))||Typehander.indexOf("html")!=-1) {
+		String[] handerlist=Hander.split("\r\n\r\n");
+		Typehander=handerlist[0].toLowerCase();
+		if(Typehander.indexOf("html")!=-1 ||(CheckResponseType(hp.bytesToString(messageInfo.getResponse()))&&Typehander.indexOf("avascrip")!=-1)) {
 
 			IHttpService is=messageInfo.getHttpService();
 			
 			Pattern p = Pattern.compile(REGEX,Pattern.DOTALL);
 			Matcher m = p.matcher(Hander);
 			String uri=ReadJsPath(hp.bytesToString(messageInfo.getRequest()));
+			this.stdout.println("url is"+uri);
 
-			if(is.getHost()!=null&&!domain.keySet().contains(is.getHost())) {
+			if(is.getHost()+"："+is.getPort()!=null&&!domain.keySet().contains(is.getHost()+"："+is.getPort())) {
 				List cc=new ArrayList(domain.keySet());
-				cc.add(new String(is.getHost()));
+				cc.add(new String(is.getHost()+"："+is.getPort()));
 				String[] domain2=(String[])cc.toArray(new String[0]);
 				domainlist.setListData(domain2);
-				if(!domain.keySet().contains(is.getHost())) {
-					domain.put(is.getHost(), new ArrayList<String>());
+				if(!domain.keySet().contains(is.getHost()+"："+is.getPort())) {
+					domain.put(is.getHost()+"："+is.getPort(), new ArrayList<String>());
 				}
 				
 			}
@@ -394,33 +396,34 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 			while(m.find(findStart)) {
 				
 				this.stdout.println("startis"+Integer.toString(findStart) );
-				if(domain.get(is.getHost()).contains(m.group(1)) || m.group(1).length()<=4 ||CheckAIPEndSwith(m.group(1))) {
-					findStart=m.end();
+				if(domain.get(is.getHost()+"："+is.getPort()).contains(m.group(1)) || m.group(1).length()<=4 ||CheckAIPEndSwith(m.group(1))) {
+					findStart=m.end()-160;
 					continue;
 				}
-				domain.get(is.getHost()).add(m.group(1));
+				domain.get(is.getHost()+"："+is.getPort()).add(m.group(1));
 				String data=""+m.group(1)+"###"+uri+"###"+m.group();
 				data=data.replaceAll("\n", "");
 				data=data.replaceAll("\r", "")+"\n";
 				//this.stdout.println(data);
+				findStart=m.end()-160;
 				try {
-					writeToFile("thisApi", is.getHost(), data, false);
+					writeToFile("thisApi", is.getHost()+"："+is.getPort(), data, false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					this.stdout.println("文件写入错误");
 				}
-				findStart=m.end()-160;
+				
 				this.stdout.println("endis"+Integer.toString(m.end()) );
 			}
 			//跑敏感信息
 			String ValueS="";
 			//加载之前的内容
-			if(!InfoTexMap.keySet().contains(is.getHost())) {
-				InfoTexMap.put(is.getHost(),new ArrayList<String>());
+			if(!InfoTexMap.keySet().contains(is.getHost()+"："+is.getPort())) {
+				InfoTexMap.put(is.getHost()+"："+is.getPort(),new ArrayList<String>());
 			}
 			for (Map.Entry entry : InfoRegMap.entrySet()) {
-			String key =".{50}"+entry.getKey()+".{50}";
+			String key =".{20}"+entry.getKey()+".{20}";
 			
 			Pattern p2 = Pattern.compile(key,Pattern.DOTALL);
 			Matcher m2 = p2.matcher(Hander);
@@ -429,18 +432,18 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 				//if(ValueS.indexOf(ws)==-1) {
 				//} 
 				try {
-					if (infoisHas.contains(is.getHost()+m2.group(1))){
+					if (infoisHas.contains(is.getHost()+"："+is.getPort()+m2.group(1))){
 						continue;
 					}
-					if(!InfoTexMap.get(is.getHost()).contains(entry.getValue())) {
-						InfoTexMap.get(is.getHost()).add(entry.getValue());
+					if(!InfoTexMap.get(is.getHost()+"："+is.getPort()).contains(entry.getValue())) {
+						InfoTexMap.get(is.getHost()+"："+is.getPort()).add(entry.getValue());
 					}
-					infoisHas.add(is.getHost()+m2.group(1));
+					infoisHas.add(is.getHost()+"："+is.getPort()+m2.group(1));
 					String data= entry.getValue()+"###"+m2.group(1)+"###"+m2.group()+"###"+uri;
 					data=data.replaceAll("\n", "");
 					data=data.replaceAll("\r", "")+"\n";
 					//this.stdout.println(data);
-					writeToFile("thisinfo", is.getHost(),data, false);
+					writeToFile("thisinfo", is.getHost()+"："+is.getPort(),data, false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -545,10 +548,24 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		
 		return false;
 	}
-	//判断是否是个js文件，因为某些接口返回类型也是javascript
+	//判断是否是个js文件，某些接口返回类型也是javascript
+	//关于如何区分接口和js文件，为了防止产生大量接口中携带的url链接，通过一些js的关键词来判断。
 	public Boolean CheckResponseType(String s) {
-		String cz=s.split("HTTP")[0];
-		if(cz.indexOf(".js")!=-1) 
+		//String cz=s.split("HTTP")[0];
+		//建立一个检测计数器，每检测到符合一个特征则+1
+		int checkNumber=0;
+		String[] checkPoints= {"function ","if","return ","catch","for"};
+		for(String checkPoint : checkPoints)
+		{
+			
+			if(s.indexOf(checkPoint)!=-1)
+			{
+				checkNumber++;
+				
+			}
+		}
+		//如果命中3条以上规则，则确定为js文件内容。
+		if(checkNumber>=3)
 			return true;
 		return false;
 		
