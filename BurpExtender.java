@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +49,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 	public List<JMenuItem> listMenuItems;
 	public String jm="off YitaiqiFilter";
 	public JMenuItem jmOff;
-	public String REGEX=".{10}[\"\'`](/[a-zA-Z0-9/=_{}?&]+(\\.jspx|\\.jsp|\\.html|\\.php|\\.do|\\.aspx|\\.action|\\.json)*)[\"\'`].{160}";
+	public String REGEX=".{10}[\"\'`](/[a-zA-Z0-9/=_{}\\?&!]+(\\.jspx|\\.jsp|\\.html|\\.php|\\.do|\\.aspx|\\.action|\\.json)*)[\"\'`].{160}";
 	public HashMap<String, List> domain=new HashMap< String, List>();
 	public List APIListtxt=new ArrayList<String>();
 	//public String CachePath=System.getProperty("user.dir")+"/YitaiqiJSFilter/dataCace/";
@@ -101,6 +102,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
         callbacks.registerExtensionStateListener(this);
         try {
 			LoadConfig();
+			LoadReg();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -133,7 +135,9 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 							String c= domainlist.getSelectedValue();
 							String tableText=jtabbedpane.getTitleAt(jtabbedpane.getSelectedIndex());
 							if (tableText=="API接口") {
-							APIlist.setListData((String[])domain.get(c).toArray(new String[0]));
+							String[] tmparray=(String[])domain.get(c).toArray(new String[0]);
+							Arrays.sort(tmparray);
+							APIlist.setListData(tmparray);
 							}else if(tableText=="敏感信息") {
 							Info_Text.setText(null);
 							infolist.setListData((String[])InfoTexMap.get(c).toArray(new String[0]));
@@ -251,14 +255,14 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 				});
                 //选项栏二右边的整体pane
                 JSplitPane infosplitpane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true);
-                infosplitpane.setDividerLocation(0.3);
-                infosplitpane.setOneTouchExpandable(true);
+                
                 JTextField ccx = new JTextField(16);
                 ccx.setEditable(false);
-                JPanel zz=new JPanel();
-                zz.add(ccx);
-                zz.add(infolist);
-                infosplitpane.setLeftComponent(zz);
+                //JScrollPane zz=new JScrollPane();
+                //zz.add(ccx);
+                //zz.add(infolist);
+                //zz.add(infolist);
+                infosplitpane.setLeftComponent(jpaninfo_list);
                 infosplitpane.setRightComponent(jpaninfo);
                 //右方API选项卡的内容
                 JSplitPane APIsplitpane=new JSplitPane(JSplitPane.VERTICAL_SPLIT,true);
@@ -287,6 +291,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 						Info_Text.setText(null);
 						try {
 							ArrayList<String> vv=new ArrayList<String>();
+							infosplitpane.setDividerLocation(0.3);
 							infolist.setListData((String[])InfoTexMap.get(c).toArray(new String[0]));
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -306,6 +311,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
                 			
                 	}
                 	String[] domain2=(String[])cz.toArray(new String[0]);
+                	Arrays.sort(domain2);
         			domainlist.setListData(domain2);
                 });
 				//组装。
@@ -324,6 +330,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 				cb.customizeUiComponent(jsplitpane);
 				//设置标签
 				cb.addSuiteTab(BurpExtender.this);
+				
 				
 			}
 		});
@@ -501,6 +508,41 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		}
 		reader.close();
 		stdout.println("数据装载完成");
+		
+		
+	}
+	public void LoadReg() throws IOException 
+	{
+		File file=new File(CachePath+"../Regex.txt");
+		File fileParent = file.getParentFile();
+		if(!fileParent.exists()) {
+			fileParent.mkdirs();
+		}
+		stdout.println(file.getPath());
+		if(!file.exists()) {
+			file.createNewFile();
+			stdout.println("匹配规则文件生成成功");
+			String data="[\"\'`](/[a-zA-Z0-9/=_{}\\?&!]+(\\.jspx|\\.jsp|\\.html|\\.php|\\.do|\\.aspx|\\.action|\\.json)*)[\"\'`]";
+			FileWriter fileWritter = new FileWriter(file);
+			fileWritter.write(data);
+			fileWritter.close();
+			stdout.println("初始数据写入完成");
+		}
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String tempString = null;
+		while((tempString=reader.readLine())!=null) {
+			
+			if(tempString.replace("\r", "").replace("\n", "")!="")
+			{
+				
+				String temp=".{10}"+tempString.replace("\r", "").replace("\n", "")+".{160}";
+				REGEX=temp;
+			}
+			
+		}
+		reader.close();
+		stdout.println("接口匹配规则装载完成");
+		
 		
 		
 	}
