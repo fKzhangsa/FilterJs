@@ -27,5 +27,5 @@
 
 
 
-详细插件使用方式如下:https://mp.weixin.qq.com/s/t7k5mm5G9vObwEmCwQca8Q。
+详细插件使用方式如下:https://mp.weixin.qq.com/s/t7k5mm5G9vObwEmCwQca8Q 。
 其他工具可关注我的微信公众号"地表最强伍迪哥"。
