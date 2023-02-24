@@ -161,9 +161,20 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
                 //APIlist双击
                 APIlist.addMouseListener(new MouseAdapter() {
                 	public void mouseClicked(MouseEvent e) {
-                		if(e.getClickCount()>=2) {
+                		if(e.getClickCount()==2) {
                 			stdout.println("复制成功");
                 			setSysClipboardText(APIlist.getSelectedValue());
+                		}
+                		if(e.getClickCount()>=3) {
+                			stdout.println("复制成功");
+                			ListModel m=APIlist.getModel();
+                			String str="";
+                			for(int i=0;i<m.getSize();i++)
+                			{
+                				str+=(String)m.getElementAt(i)+"\n";
+                				
+                			}
+                			setSysClipboardText(str);
                 		}
                 	}
                 
