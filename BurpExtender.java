@@ -32,9 +32,9 @@ import javax.swing.text.StyleConstants;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 import com.sun.xml.internal.txw2.Document;
 
-//Í¨¹ıÊµÏÖITabµÄ½Ó¿ÚÀ´Ìí¼Ótable
+//é€šè¿‡å®ç°ITabçš„æ¥å£æ¥æ·»åŠ table
 public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHttpListener,IExtensionStateListener{
-	//·½±ãÔÚÈÎºÎµØ·½Ê¹ÓÃ
+	//æ–¹ä¾¿åœ¨ä»»ä½•åœ°æ–¹ä½¿ç”¨
 	public IBurpExtenderCallbacks cb;
 	public IExtensionHelpers hp;
 	public JSplitPane jsplitpane;
@@ -63,16 +63,16 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 	public HashMap<String, String> InfoandTexMap=new HashMap< String, String>();
 	public ArrayList<String> infoisHas=new ArrayList<String>();
 	public JTextField SearchField = new JTextField(16);
-	public JButton SearchButton = new JButton("¼ìË÷");
+	public JButton SearchButton = new JButton("æ£€ç´¢");
 	public JScrollPane jpaninfo;
 	
-	//ItabµÄ½Ó¿Ú£¬·µ»Ø±êÇ©µÄÃû³Æ
+	//Itabçš„æ¥å£ï¼Œè¿”å›æ ‡ç­¾çš„åç§°
 	@Override
 	public String getTabCaption() {
 		// TODO Auto-generated method stub
 		return "YitaiqiFilter";
 	}
-	//ItabµÄ½Ó¿Ú£¬·µ»ØtableµÄgui½çÃæ
+	//Itabçš„æ¥å£ï¼Œè¿”å›tableçš„guiç•Œé¢
 	@Override
 	public Component getUiComponent() {
 		// TODO Auto-generated method stub
@@ -81,15 +81,15 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 	@Override
 	public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks) {
 		// TODO Auto-generated method stub
-		//ÉèÖÃ²å¼şÃû³Æ
+		//è®¾ç½®æ’ä»¶åç§°
 		OnorOff=true;
 		callbacks.setExtensionName("yitaiqiFilterJs");
 		this.cb=callbacks;
 		this.hp=callbacks.getHelpers();
         this.stdout = new PrintWriter(callbacks.getStdout(), true);
         try {
-			this.stdout.println(changeCharset("×÷Õß:yitaiqi"));
-			this.stdout.println(changeCharset("¹«ÖÚºÅ:µØ±í×îÇ¿ÎéµÏ¸ç"));
+			this.stdout.println(changeCharset("ä½œè€…:yitaiqi"));
+			this.stdout.println(changeCharset("å…¬ä¼—å·:åœ°è¡¨æœ€å¼ºä¼è¿ªå“¥"));
 	        this.stdout.println(changeCharset("###################################################################"));
 		} catch (UnsupportedEncodingException e2) {
 			// TODO Auto-generated catch block
@@ -107,25 +107,25 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		//´´½¨Ò»¸öSwingµÄÏß³Ì£¬ÔÚÆäÖĞÍ¨¹ıjavaµÄswt×é¼ş»æÖÆÄãÒªµÄìÅ¿á½çÃæ¡£
+		//åˆ›å»ºä¸€ä¸ªSwingçš„çº¿ç¨‹ï¼Œåœ¨å…¶ä¸­é€šè¿‡javaçš„swtç»„ä»¶ç»˜åˆ¶ä½ è¦çš„ç‚«é…·ç•Œé¢ã€‚
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				//·Ö¸ôÃæ°å
+				//åˆ†éš”é¢æ¿
 				jsplitpane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true);
 				jsplitpane.setDividerLocation(0.5);
 				jsplitpane.setOneTouchExpandable(true);
-			    //ÁĞ±í+¹ö¶¯Ìõ
-			    //ÉèÖÃ×ÖÌåÑÕÉ«
+			    //åˆ—è¡¨+æ»šåŠ¨æ¡
+			    //è®¾ç½®å­—ä½“é¢œè‰²
 				attrSet = new SimpleAttributeSet();
 				StyleConstants.setForeground(attrSet, Color.red);
 				//StyleConstants.setFontSize(attrSet, fontSize);
 			    domainlist = new JList<String>();
-		        // ÉèÖÃÒ»ÏÂÊ×Ñ¡´óĞ¡
-		        // ÔÊĞí¿É¼ä¶ÏµÄ¶àÑ¡
+		        // è®¾ç½®ä¸€ä¸‹é¦–é€‰å¤§å°
+		        // å…è®¸å¯é—´æ–­çš„å¤šé€‰
 		        domainlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		        // ÉèÖÃÑ¡Ôñ¼àÌı
+		        // è®¾ç½®é€‰æ‹©ç›‘å¬
 		        domainlist.addListSelectionListener(new ListSelectionListener() {
 					
 					@Override
@@ -134,11 +134,11 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 						try {
 							String c= domainlist.getSelectedValue();
 							String tableText=jtabbedpane.getTitleAt(jtabbedpane.getSelectedIndex());
-							if (tableText=="API½Ó¿Ú") {
+							if (tableText=="APIæ¥å£") {
 							String[] tmparray=(String[])domain.get(c).toArray(new String[0]);
 							Arrays.sort(tmparray);
 							APIlist.setListData(tmparray);
-							}else if(tableText=="Ãô¸ĞĞÅÏ¢") {
+							}else if(tableText=="æ•æ„Ÿä¿¡æ¯") {
 							Info_Text.setText(null);
 							infolist.setListData((String[])InfoTexMap.get(c).toArray(new String[0]));
 						
@@ -153,20 +153,20 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		        JScrollPane jScrollPane1 = new JScrollPane(domainlist);
                 jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 jScrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-                //APIÉÏ±ßµÄÑ¡ÏîÀ¸
+                //APIä¸Šè¾¹çš„é€‰é¡¹æ 
                 APIlist = new JList<String>();
                 JScrollPane jpanAPI_top= new JScrollPane(APIlist);
                 jpanAPI_top.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 jpanAPI_top.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-                //APIlistË«»÷
+                //APIliståŒå‡»
                 APIlist.addMouseListener(new MouseAdapter() {
                 	public void mouseClicked(MouseEvent e) {
                 		if(e.getClickCount()==2) {
-                			stdout.println("¸´ÖÆ³É¹¦");
+                			stdout.println("å¤åˆ¶æˆåŠŸ");
                 			setSysClipboardText(APIlist.getSelectedValue());
                 		}
                 		if(e.getClickCount()>=3) {
-                			stdout.println("¸´ÖÆ³É¹¦");
+                			stdout.println("å¤åˆ¶æˆåŠŸ");
                 			ListModel m=APIlist.getModel();
                 			String str="";
                 			for(int i=0;i<m.getSize();i++)
@@ -180,7 +180,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
                 
                 
                 });
-                //APIlist¼àÌı
+                //APIlistç›‘å¬
                 APIlist.addListSelectionListener(new ListSelectionListener() {
 					
 					@Override
@@ -198,7 +198,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 								 if(tempString.startsWith(APIlist.getSelectedValue())) {
 									 tempString=changeCharset(tempString);
 									 //stdout.println(tempString);
-									 String url="js½Å±¾µØÖ·:\n"+tempString.split("###")[1];
+									 String url="jsè„šæœ¬åœ°å€:\n"+tempString.split("###")[1];
 									 //stdout.println("aaaaaaaaaaaaaaaaaaaaaaaaa!");
 									 String api=tempString.split("###")[0];
 									 String context=tempString.split("###")[2];
@@ -215,17 +215,17 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 						}
 					}
 				});
-                //APIÏÂ±ßµÄÑ¡ÏîÀ¸
+                //APIä¸‹è¾¹çš„é€‰é¡¹æ 
                 //API_Text=new JTextPane();
                 //API_Text.setEnabled(false);
                 jpanAPI_but= new JScrollPane(API_Text);
                 jpanAPI_but.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 jpanAPI_but.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-                //Ñ¡ÏîÀ¸¶şÄÇĞ©ÄãºöÂÔµÄĞÅÏ¢
+                //é€‰é¡¹æ äºŒé‚£äº›ä½ å¿½ç•¥çš„ä¿¡æ¯
                 jpaninfo= new JScrollPane(Info_Text);
                 jpaninfo.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 jpaninfo.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-                //Ñ¡ÏîÀ¸¶şinfolist
+                //é€‰é¡¹æ äºŒinfolist
                 infolist = new JList<String>();
                 JScrollPane jpaninfo_list= new JScrollPane(infolist);
                 jpaninfo_list.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -246,7 +246,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 						 while((tempString=reader.readLine())!=null) {
 							 if(tempString.startsWith(infolist.getSelectedValue())) {
 								 tempString=changeCharset(tempString);
-								 String url="js½Å±¾µØÖ·:\n"+tempString.split("###")[3];
+								 String url="jsè„šæœ¬åœ°å€:\n"+tempString.split("###")[3];
 								 String api=tempString.split("###")[1];
 								 String context=tempString.split("###")[2];
 								 Info_Text.setDocument(insaDocument(e,  context,api, url));
@@ -264,7 +264,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 						
 					
 				});
-                //Ñ¡ÏîÀ¸¶şÓÒ±ßµÄÕûÌåpane
+                //é€‰é¡¹æ äºŒå³è¾¹çš„æ•´ä½“pane
                 JSplitPane infosplitpane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true);
                 
                 JTextField ccx = new JTextField(16);
@@ -275,20 +275,20 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
                 //zz.add(infolist);
                 infosplitpane.setLeftComponent(jpaninfo_list);
                 infosplitpane.setRightComponent(jpaninfo);
-                //ÓÒ·½APIÑ¡Ïî¿¨µÄÄÚÈİ
+                //å³æ–¹APIé€‰é¡¹å¡çš„å†…å®¹
                 JSplitPane APIsplitpane=new JSplitPane(JSplitPane.VERTICAL_SPLIT,true);
                 APIsplitpane.setDividerLocation(0.5);
                 APIsplitpane.setOneTouchExpandable(true);
-                //APIÌí¼ÓÉÏÏÂÁ½²¿·Ö
+                //APIæ·»åŠ ä¸Šä¸‹ä¸¤éƒ¨åˆ†
                 stdout.println("222!");
                 APIsplitpane.setTopComponent(jpanAPI_top);
                 APIsplitpane.setBottomComponent(jpanAPI_but);
-                //Ñ¡Ïî¿¨
+                //é€‰é¡¹å¡
                 jtabbedpane=new JTabbedPane();
                 jtabbedpane.scrollRectToVisible(new Rectangle(500, 70));
-                jtabbedpane.addTab("API½Ó¿Ú", APIsplitpane);
-                jtabbedpane.addTab("Ãô¸ĞĞÅÏ¢", infosplitpane);
-                //Table¼àÌı
+                jtabbedpane.addTab("APIæ¥å£", APIsplitpane);
+                jtabbedpane.addTab("æ•æ„Ÿä¿¡æ¯", infosplitpane);
+                //Tableç›‘å¬
                 jtabbedpane.addChangeListener(new ChangeListener() {
 					
 					@Override
@@ -296,9 +296,9 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 						// TODO Auto-generated method stub
 						String c= domainlist.getSelectedValue();
 						String tableText=jtabbedpane.getTitleAt(jtabbedpane.getSelectedIndex());
-						if (tableText=="API½Ó¿Ú") {
+						if (tableText=="APIæ¥å£") {
 						APIlist.setListData((String[])domain.get(c).toArray(new String[0]));
-						}else if(tableText=="Ãô¸ĞĞÅÏ¢") {
+						}else if(tableText=="æ•æ„Ÿä¿¡æ¯") {
 						Info_Text.setText(null);
 						try {
 							ArrayList<String> vv=new ArrayList<String>();
@@ -311,7 +311,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 						}
 					}
 				});
-                //¼ìË÷°´Å¥¼àÌı
+                //æ£€ç´¢æŒ‰é’®ç›‘å¬
                 SearchButton.addActionListener((e)->{
                 	String stc=SearchField.getText();
                 	ArrayList<String> cz=new ArrayList();
@@ -325,8 +325,8 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
                 	Arrays.sort(domain2);
         			domainlist.setListData(domain2);
                 });
-				//×é×°¡£
-                //×ó±ßµÄ¶«Î÷
+				//ç»„è£…ã€‚
+                //å·¦è¾¹çš„ä¸œè¥¿
                 JSplitPane leftpane=new JSplitPane(JSplitPane.VERTICAL_SPLIT,true);
                 leftpane.setDividerLocation(0.5);
                 leftpane.setOneTouchExpandable(true);
@@ -339,7 +339,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 				jsplitpane.setRightComponent(jtabbedpane);
 				
 				cb.customizeUiComponent(jsplitpane);
-				//ÉèÖÃ±êÇ©
+				//è®¾ç½®æ ‡ç­¾
 				cb.addSuiteTab(BurpExtender.this);
 				
 				
@@ -370,9 +370,9 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		
 			}
 		});
-		//½«Äã´´½¨µÄ²Ëµ¥¼ÓÈëlistÖĞ
+		//å°†ä½ åˆ›å»ºçš„èœå•åŠ å…¥listä¸­
 	    listMenuItems.add(jmOff);
-	    //·µ»ØÄãµÄlist
+	    //è¿”å›ä½ çš„list
 	    return listMenuItems;
 
 	}
@@ -400,13 +400,13 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 			String uri=ReadJsPath(hp.bytesToString(messageInfo.getRequest()));
 			this.stdout.println("url is"+uri);
 
-			if(is.getHost()+"£º"+is.getPort()!=null&&!domain.keySet().contains(is.getHost()+"£º"+is.getPort())) {
+			if(is.getHost()+"ï¼š"+is.getPort()!=null&&!domain.keySet().contains(is.getHost()+"ï¼š"+is.getPort())) {
 				List cc=new ArrayList(domain.keySet());
-				cc.add(new String(is.getHost()+"£º"+is.getPort()));
+				cc.add(new String(is.getHost()+"ï¼š"+is.getPort()));
 				String[] domain2=(String[])cc.toArray(new String[0]);
 				domainlist.setListData(domain2);
-				if(!domain.keySet().contains(is.getHost()+"£º"+is.getPort())) {
-					domain.put(is.getHost()+"£º"+is.getPort(), new ArrayList<String>());
+				if(!domain.keySet().contains(is.getHost()+"ï¼š"+is.getPort())) {
+					domain.put(is.getHost()+"ï¼š"+is.getPort(), new ArrayList<String>());
 				}
 				
 			}
@@ -414,58 +414,58 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 			while(m.find(findStart)) {
 				
 				this.stdout.println("startis"+Integer.toString(findStart) );
-				if(domain.get(is.getHost()+"£º"+is.getPort()).contains(m.group(1)) || m.group(1).length()<=4 ||CheckAIPEndSwith(m.group(1))) {
+				if(domain.get(is.getHost()+"ï¼š"+is.getPort()).contains(m.group(1)) || m.group(1).length()<=4 ||CheckAIPEndSwith(m.group(1))) {
 					findStart=m.end()-160;
 					continue;
 				}
-				domain.get(is.getHost()+"£º"+is.getPort()).add(m.group(1));
+				domain.get(is.getHost()+"ï¼š"+is.getPort()).add(m.group(1));
 				String data=""+m.group(1)+"###"+uri+"###"+m.group();
 				data=data.replaceAll("\n", "");
 				data=data.replaceAll("\r", "")+"\n";
 				//this.stdout.println(data);
 				findStart=m.end()-160;
 				try {
-					writeToFile("thisApi", is.getHost()+"£º"+is.getPort(), data, false);
+					writeToFile("thisApi", is.getHost()+"ï¼š"+is.getPort(), data, false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					this.stdout.println("ÎÄ¼şĞ´Èë´íÎó");
+					this.stdout.println("æ–‡ä»¶å†™å…¥é”™è¯¯");
 				}
 				
 				this.stdout.println("endis"+Integer.toString(m.end()) );
 			}
-			//ÅÜÃô¸ĞĞÅÏ¢
+			//è·‘æ•æ„Ÿä¿¡æ¯
 			String ValueS="";
-			//¼ÓÔØÖ®Ç°µÄÄÚÈİ
-			if(!InfoTexMap.keySet().contains(is.getHost()+"£º"+is.getPort())) {
-				InfoTexMap.put(is.getHost()+"£º"+is.getPort(),new ArrayList<String>());
+			//åŠ è½½ä¹‹å‰çš„å†…å®¹
+			if(!InfoTexMap.keySet().contains(is.getHost()+"ï¼š"+is.getPort())) {
+				InfoTexMap.put(is.getHost()+"ï¼š"+is.getPort(),new ArrayList<String>());
 			}
 			for (Map.Entry entry : InfoRegMap.entrySet()) {
 			String key =".{20}"+entry.getKey()+".{20}";
 			
 			Pattern p2 = Pattern.compile(key,Pattern.DOTALL);
 			Matcher m2 = p2.matcher(Hander);
-			//±éÀú
+			//éå†
 			while(m2.find()) {
 				//if(ValueS.indexOf(ws)==-1) {
 				//} 
 				try {
-					if (infoisHas.contains(is.getHost()+"£º"+is.getPort()+m2.group(1))){
+					if (infoisHas.contains(is.getHost()+"ï¼š"+is.getPort()+m2.group(1))){
 						continue;
 					}
-					if(!InfoTexMap.get(is.getHost()+"£º"+is.getPort()).contains(entry.getValue())) {
-						InfoTexMap.get(is.getHost()+"£º"+is.getPort()).add(entry.getValue());
+					if(!InfoTexMap.get(is.getHost()+"ï¼š"+is.getPort()).contains(entry.getValue())) {
+						InfoTexMap.get(is.getHost()+"ï¼š"+is.getPort()).add(entry.getValue());
 					}
-					infoisHas.add(is.getHost()+"£º"+is.getPort()+m2.group(1));
+					infoisHas.add(is.getHost()+"ï¼š"+is.getPort()+m2.group(1));
 					String data= entry.getValue()+"###"+m2.group(1)+"###"+m2.group()+"###"+uri;
 					data=data.replaceAll("\n", "");
 					data=data.replaceAll("\r", "")+"\n";
 					//this.stdout.println(data);
-					writeToFile("thisinfo", is.getHost()+"£º"+is.getPort(),data, false);
+					writeToFile("thisinfo", is.getHost()+"ï¼š"+is.getPort(),data, false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					this.stdout.println("ÎÄ¼şĞ´Èë´íÎó");
+					this.stdout.println("æ–‡ä»¶å†™å…¥é”™è¯¯");
 				}
 			}
 			}
@@ -489,7 +489,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		    fileWritter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			stdout.println("ÎÄ¼ş´´½¨³ö´í");
+			stdout.println("æ–‡ä»¶åˆ›å»ºå‡ºé”™");
 			
 		}
 		fileWritter.close();
@@ -504,13 +504,13 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		stdout.println(file.getPath());
 		if(!file.exists()) {
 			file.createNewFile();
-			stdout.println("ÅäÖÃÎÄ¼şÉú³É³É¹¦");
+			stdout.println("é…ç½®æ–‡ä»¶ç”ŸæˆæˆåŠŸ");
 			String data="([\'\"][0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}[\'\"])###ip\n"
-					+ "([\'\"]1[3|4|5|7|8|9][0-9]{9}[\'\"])###ÊÖ»úºÅ\n";
+					+ "([\'\"]1[3|4|5|7|8|9][0-9]{9}[\'\"])###æ‰‹æœºå·\n";
 			FileWriter fileWritter = new FileWriter(file);
 			fileWritter.write(data);
 			fileWritter.close();
-			stdout.println("³õÊ¼Êı¾İĞ´ÈëÍê³É");
+			stdout.println("åˆå§‹æ•°æ®å†™å…¥å®Œæˆ");
 		}
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String tempString = null;
@@ -518,12 +518,13 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 			InfoRegMap.put(tempString.split("###")[0], tempString.split("###")[1]);
 		}
 		reader.close();
-		stdout.println("Êı¾İ×°ÔØÍê³É");
+		stdout.println("æ•°æ®è£…è½½å®Œæˆ");
 		
 		
 	}
 	public void LoadReg() throws IOException 
 	{
+		stdout.println("å¼€å§‹è¯»å–åŒ¹é…è§„åˆ™æ–‡ä»¶");
 		File file=new File(CachePath+"../Regex.txt");
 		File fileParent = file.getParentFile();
 		if(!fileParent.exists()) {
@@ -532,12 +533,12 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		stdout.println(file.getPath());
 		if(!file.exists()) {
 			file.createNewFile();
-			stdout.println("Æ¥Åä¹æÔòÎÄ¼şÉú³É³É¹¦");
-			String data="[\"\'`](/[a-zA-Z0-9/=_{}\\?&!]+(\\.jspx|\\.jsp|\\.html|\\.php|\\.do|\\.aspx|\\.action|\\.json)*)[\"\'`]";
+			stdout.println("åŒ¹é…è§„åˆ™æ–‡ä»¶ç”ŸæˆæˆåŠŸ");
+			String data="[\"\'`]([a-zA-Z0-9/=_{}\\.\\?&!-]+/[a-zA-Z0-9/=_{}\\.\\?&!-]+(\\.jspx|\\.jsp|\\.html|\\.php|\\.do|\\.aspx|\\.action|\\.json)*)[\"\'`]";
 			FileWriter fileWritter = new FileWriter(file);
 			fileWritter.write(data);
 			fileWritter.close();
-			stdout.println("³õÊ¼Êı¾İĞ´ÈëÍê³É");
+			stdout.println("åˆå§‹æ•°æ®å†™å…¥å®Œæˆ");
 		}
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String tempString = null;
@@ -552,7 +553,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 			
 		}
 		reader.close();
-		stdout.println("½Ó¿ÚÆ¥Åä¹æÔò×°ÔØÍê³É");
+		stdout.println("æ¥å£åŒ¹é…è§„åˆ™è£…è½½å®Œæˆ");
 		
 		
 		
@@ -589,9 +590,9 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		return false;
 		
 	}
-	//ÅĞ¶ÏÊÇ·ñÒÔ·Ç½Ó¿Úºó×º½áÎ²
+	//åˆ¤æ–­æ˜¯å¦ä»¥éæ¥å£åç¼€ç»“å°¾
 	public Boolean CheckAIPEndSwith(String s) {
-		//¶¨Òå·Ç·¨Â·¾¶ºó×º
+		//å®šä¹‰éæ³•è·¯å¾„åç¼€
 		String[] c= {".jpg",".png",".js",".css",".jpeg",".gif"};
 		for(String w:c) {
 			if(s.endsWith(w)) {
@@ -601,11 +602,11 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		
 		return false;
 	}
-	//ÅĞ¶ÏÊÇ·ñÊÇ¸öjsÎÄ¼ş£¬Ä³Ğ©½Ó¿Ú·µ»ØÀàĞÍÒ²ÊÇjavascript
-	//¹ØÓÚÈçºÎÇø·Ö½Ó¿ÚºÍjsÎÄ¼ş£¬ÎªÁË·ÀÖ¹²úÉú´óÁ¿½Ó¿ÚÖĞĞ¯´øµÄurlÁ´½Ó£¬Í¨¹ıÒ»Ğ©jsµÄ¹Ø¼ü´ÊÀ´ÅĞ¶Ï¡£
+	//åˆ¤æ–­æ˜¯å¦æ˜¯ä¸ªjsæ–‡ä»¶ï¼ŒæŸäº›æ¥å£è¿”å›ç±»å‹ä¹Ÿæ˜¯javascript
+	//å…³äºå¦‚ä½•åŒºåˆ†æ¥å£å’Œjsæ–‡ä»¶ï¼Œä¸ºäº†é˜²æ­¢äº§ç”Ÿå¤§é‡æ¥å£ä¸­æºå¸¦çš„urlé“¾æ¥ï¼Œé€šè¿‡ä¸€äº›jsçš„å…³é”®è¯æ¥åˆ¤æ–­ã€‚
 	public Boolean CheckResponseType(String s) {
 		//String cz=s.split("HTTP")[0];
-		//½¨Á¢Ò»¸ö¼ì²â¼ÆÊıÆ÷£¬Ã¿¼ì²âµ½·ûºÏÒ»¸öÌØÕ÷Ôò+1
+		//å»ºç«‹ä¸€ä¸ªæ£€æµ‹è®¡æ•°å™¨ï¼Œæ¯æ£€æµ‹åˆ°ç¬¦åˆä¸€ä¸ªç‰¹å¾åˆ™+1
 		int checkNumber=0;
 		String[] checkPoints= {"function ","if","return ","catch","for"};
 		for(String checkPoint : checkPoints)
@@ -617,24 +618,24 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 				
 			}
 		}
-		//Èç¹ûÃüÖĞ3ÌõÒÔÉÏ¹æÔò£¬ÔòÈ·¶¨ÎªjsÎÄ¼şÄÚÈİ¡£
+		//å¦‚æœå‘½ä¸­3æ¡ä»¥ä¸Šè§„åˆ™ï¼Œåˆ™ç¡®å®šä¸ºjsæ–‡ä»¶å†…å®¹ã€‚
 		if(checkNumber>=3)
 			return true;
 		return false;
 		
 	}
-	//½â¾ö±àÂëÎÊÌâ
+	//è§£å†³ç¼–ç é—®é¢˜
 	 public String changeCharset(String str)  
 			   throws UnsupportedEncodingException {  
 			  if (str != null) {  
-			   //ÓÃÄ¬ÈÏ×Ö·û±àÂë½âÂë×Ö·û´®¡£  
+			   //ç”¨é»˜è®¤å­—ç¬¦ç¼–ç è§£ç å­—ç¬¦ä¸²ã€‚  
 			   byte[] bs = str.getBytes("utf-8");  
-			   //ÓÃĞÂµÄ×Ö·û±àÂëÉú³É×Ö·û´®  
+			   //ç”¨æ–°çš„å­—ç¬¦ç¼–ç ç”Ÿæˆå­—ç¬¦ä¸²  
 			   return new String(bs, "utf-8");  
 			  }  
 			  return null;  
 			 }
-	 //tzÎªÈ«²¿Êı¾İ£¬tz2ÎªÒª¸ßÁÁµÄ¹Ø¼ü×Ö£¬urlÎªapiµÄurl
+	 //tzä¸ºå…¨éƒ¨æ•°æ®ï¼Œtz2ä¸ºè¦é«˜äº®çš„å…³é”®å­—ï¼Œurlä¸ºapiçš„url
 	 public javax.swing.text.Document insaDocument(javax.swing.text.Document dc,String tz,String tz2,String url) {
 		 String api=tz2;
 		 String context=tz;
@@ -648,7 +649,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 		 righT=righT.replace(",", ",\n");
 		 try {
 		 dc.insertString(dc.getLength(), url+"\n\n\n", null);
-		 dc.insertString(dc.getLength(), "¹Ø¼ü×ÖÉÏÏÂÎÄ:\n", null);
+		 dc.insertString(dc.getLength(), "å…³é”®å­—ä¸Šä¸‹æ–‡:\n", null);
 		 String indentation="";
 		 String[] zb=leftT.split("\n");
 		 for(String cs:zb) {
@@ -699,7 +700,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 					f.delete();
 				}else {
 					f.delete();
-					stdout.println("»º´æÎÄ¼şÇå³ıÖĞ.");
+					stdout.println("ç¼“å­˜æ–‡ä»¶æ¸…é™¤ä¸­.");
 				}
 				
 			}
