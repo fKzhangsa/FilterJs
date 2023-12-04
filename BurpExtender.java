@@ -53,7 +53,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 	public HashMap<String, List> domain=new HashMap< String, List>();
 	public List APIListtxt=new ArrayList<String>();
 	//public String CachePath=System.getProperty("user.dir")+"/YitaiqiJSFilter/dataCace/";
-	public String CachePath=System.getProperty("java.io.tmpdir")+"/YitaiqiJSFilter/dataCace/";
+	public String CachePath=System.getProperty("user.home")+"/.config"+"/YitaiqiJSFilter/dataCace/";
 	//public String CachePath="D://"+"/YitaiqiJSFilter/dataCace/";
 	public SimpleAttributeSet attrSet;
 	public JScrollPane jpanAPI_but;
