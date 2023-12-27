@@ -64,6 +64,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
 	public ArrayList<String> infoisHas=new ArrayList<String>();
 	public JTextField SearchField = new JTextField(16);
 	public JButton SearchButton = new JButton("检索");
+	public JButton CleanButton = new JButton("清空");
 	public JScrollPane jpaninfo;
 	
 	//Itab的接口，返回标签的名称
@@ -325,6 +326,15 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
                 	Arrays.sort(domain2);
         			domainlist.setListData(domain2);
                 });
+                CleanButton.addActionListener((e)->{
+                	domain.clear();
+                	domainlist.clearSelection();
+                	domainlist.setListData(new String[0]);
+                	APIlist.setListData(new String[0]);
+                	Info_Text.setText(null);
+                	CacheFileunLoad(CachePath);
+                	
+                });
 				//组装。
                 //左边的东西
                 JSplitPane leftpane=new JSplitPane(JSplitPane.VERTICAL_SPLIT,true);
@@ -332,6 +342,7 @@ public class BurpExtender implements IBurpExtender,ITab,IContextMenuFactory,IHtt
                 leftpane.setOneTouchExpandable(true);
                 JPanel jpz=new JPanel();
                 jpz.add(SearchField);
+                jpz.add(CleanButton);
                 jpz.add(SearchButton);
                 leftpane.setTopComponent(jpz);
                 leftpane.setBottomComponent(jScrollPane1);
